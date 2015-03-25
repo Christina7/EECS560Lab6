@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 
-//#include "queue23.h"      //not yet made
+#include "queue23.h"      //not yet made
 
 using namespace std;
 
@@ -18,7 +18,7 @@ struct node23{
 	node23 *first;
 	node23 *second;
 	node23 *third;
-}
+};
 
 
 class tree23{
@@ -33,11 +33,11 @@ public:
 	void insert(double x, node23 *&L); 
 	void remove(double x); 
 	void minSwitch(node23 *&L );
-	node*& search(double x, node23 *&L);
+	node23*& search(double x, node23 *&L);
 	void deletemin( node23 *&L);
 	void deletemax( node23 *&L);
  	void levelorder(node23 *&L);
-	node*& getHead();
+	node23*& getHead();
 	void build(ifstream& file);
 
 };

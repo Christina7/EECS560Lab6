@@ -1,10 +1,10 @@
 #include <iostream>
-#include "tree.h"
+#include "tree23.h"
 using namespace std;
 
 int main(){
 
-	tree l;
+	tree23 l;
 	ifstream fileName;
 //	fileName.open("C:\\Users\\Christina\\Documents\\GitHub\\678EECS\\EECS560Lab4\\data.txt");
 	fileName.open("data.txt");
