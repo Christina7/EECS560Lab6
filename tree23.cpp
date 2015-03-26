@@ -246,6 +246,8 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 
 					parentNew->second = L->third;
 					parentNew->first = L->second;
+					parentNew->first->parent = parentNew;
+					parentNew->second->parent = parentNew;
 					L->third = NULL;
 					L->second = L->first;
 					L->first = newLeaf;
@@ -286,6 +288,8 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 
 					parentNew->second = L->third;
 					parentNew->first = L->second;
+					parentNew->second->parent = parentNew;
+					parentNew->first->parent = parentNew;
 					L->third = NULL;
 					L->second = newLeaf;
 					newLeaf->parent = L;
@@ -323,6 +327,7 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 				else if ((x > L->second->key) && (x < L->third->key)){
 
 					parentNew->second = L->third;
+					parentNew->second->parent = parentNew;
 					parentNew->first = newLeaf;
 					L->third = NULL;
 					newLeaf->parent = parentNew;
@@ -364,7 +369,7 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 					parentNew->first = L->third;
 					L->third = NULL;
 					newLeaf->parent = parentNew;
-
+					parentNew->first->parent = parentNew;
 					parentNew->minSecond = findMin(parentNew->second);
 					L->minSecond = findMin(L->second);
 					L->minThird = findMin(L->third);
@@ -408,7 +413,7 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 //putting everything together
 void tree23::insert3(node23 *& oldParent, node23 *&newParent){
 	if (oldParent->parent == NULL){		//is root
-		node23 * newRoot = new node23;
+		node23 * newRoot = new node23;		//makes new 
 		newRoot->tag = 0;
 		newRoot->first = oldParent;
 		newRoot->second = newParent;
@@ -417,7 +422,7 @@ void tree23::insert3(node23 *& oldParent, node23 *&newParent){
 		newRoot->key = -1;
 		newRoot->third = NULL;
 		newRoot->parent = NULL;
-		
+		oldParent->parent = newRoot;
 		newParent->parent = newRoot;
 		head = newRoot;
 	
@@ -425,15 +430,18 @@ void tree23::insert3(node23 *& oldParent, node23 *&newParent){
 	else{ 
 		node23 * conParent = oldParent->parent;
 		if (conParent->third == NULL){		//is 2node
-			if (conParent->first == oldParent){
+			if (conParent->first == oldParent){		//oldparent if first child
 				conParent->third = conParent->second;
 				conParent->second = newParent;
 				newParent->parent = conParent;
+				conParent->third->parent = conParent;
+				conParent->second->parent = conParent;
 				conParent->minSecond = findMin(conParent->second);
 				conParent->minThird = findMin(conParent->third);
 			}
 			else{//is second child
 				conParent->third = newParent;
+				newParent->parent = conParent;
 				conParent->minSecond = findMin(conParent->second);
 				conParent->minThird = findMin(conParent->third);
 			}
@@ -447,7 +455,10 @@ void tree23::insert3(node23 *& oldParent, node23 *&newParent){
 			if (conParent->first == oldParent){
 				newconParent->second = conParent->third;
 				newconParent->first = conParent->second;
+				newconParent->second->parent = newconParent;
+				newconParent->first->parent = newconParent;				
 				conParent->second = newParent;
+				conParent->second->parent = conParent;
 				conParent->third = NULL;
 				newconParent->minSecond = findMin(newconParent->second);
 				newconParent->minThird = findMin(newconParent->third);
@@ -458,7 +469,8 @@ void tree23::insert3(node23 *& oldParent, node23 *&newParent){
 			else if (conParent->second == oldParent){
 				newconParent->second = conParent->third;
 				newconParent->first = newParent;
-				//conParent->second = newParent;
+				newconParent->second->parent = newconParent;
+				newconParent->first->parent = newconParent;		
 				conParent->third = NULL;
 				newconParent->minSecond = findMin(newconParent->second);
 				newconParent->minThird = findMin(newconParent->third);
@@ -469,7 +481,8 @@ void tree23::insert3(node23 *& oldParent, node23 *&newParent){
 			else if (conParent->third == oldParent){
 				newconParent->second = newParent;
 				newconParent->first = conParent->third;
-				//conParent->second = newParent;
+				newconParent->second->parent = newconParent;
+				newconParent->first->parent = newconParent;		
 				conParent->third = NULL;
 				newconParent->minSecond = findMin(newconParent->second);
 				newconParent->minThird = findMin(newconParent->third);
@@ -817,9 +830,6 @@ void tree23::deletemax(node23 *&L){
 void tree23::levelorder(node23 *&L){		//need to adjust for leaves and not leaves
 	queue23 q;
 	node23 * temp = L;
-	//node23 *temp[800000];	// RISK DIDN'T DO CHECKS TO MAKE SURE IT DOESN'T EXCEED ARRAY SIZE
-	//int i = 0;
-	//int curr = 0;
 	if (L == NULL){
 		cout << "Empty tree";
 	}
@@ -836,26 +846,17 @@ void tree23::levelorder(node23 *&L){		//need to adjust for leaves and not leaves
 			q.pop();
 			if (temp->first != NULL){
 				q.insert(temp->first, q.getHead());
-				//q.insert(L->first->minThird, q.getHead());
-				//temp[i] = L->first;
-				//i++;
 			}
 			if (temp->second != NULL){
 				q.insert(temp->second, q.getHead());
-				//q.insert(L->second->minThird, q.getHead());
-				//temp[i] = L->second;
-				//i++;
 			}
 			if (temp->third != NULL){
 				q.insert(temp->third, q.getHead());
-				//q.insert(L->third->minThird, q.getHead());
-				//temp[i] = L->third;
-				//i++;
+
 			}
 			if (q.peek() != NULL){
 				temp = q.peek()->data;
-				//L = temp[curr]; //q.peek()->data;
-				//curr++;
+
 			}
 		}
 	}
