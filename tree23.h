@@ -26,6 +26,7 @@ public:
 	bool isInTree(double x, node23 *&L); 
 	node23*& findParent(double x, node23 *&L);
 	double findMin(node23 *&L);
+	double findMax(node23 *&L);
 	void remove(double x); 
 	void minSwitch(node23 *&L );
 	node23*& search(double x, node23 *&L); ///

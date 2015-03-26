@@ -569,23 +569,238 @@ double tree23::findMin(node23 *&L){
 	}
 }
 
-void tree23::remove(double x){
-
+//returns maximum number for removing max
+double tree23::findMax(node23 *&L){
+	double value;
+	if (L == NULL){
+		return -1;
+	}
+	else if (L->tag == 1){
+		value = L->key;
+		return value;
+	}
+	else{ // if (L->tag == 0){
+		if (L->third == NULL){
+			findMax(L->second);
+		}
+		else{
+			findMax(L->third);
+		}
+		
+	}
 }
 
 
+
+void tree23::remove(double x){
+	node23 * check = search(x, head);
+	
+	if (check == NULL){
+		cout << "Error number not in tree";
+	}
+	else{
+		if ((check->parent == NULL) && (check->tag == 1)){
+			delete head;
+			head = NULL;
+		}
+		else if (check->tag == 0){
+			if (check->third != NULL){		//is 3node
+				if (check->first->key == x){
+					delete check->first;
+					check->first = check->second;
+					check->second = check->third;
+					check->third = NULL;
+					check->minSecond = findMin(check->second);
+					check->minThird = findMin(check->third);
+				}
+				else if (check->second->key == x){
+					delete check->second;
+					check->second = check->third;
+					check->third = NULL;
+					check->minSecond = findMin(check->second);
+					check->minThird = findMin(check->third);
+				}
+				else if (check->third->key == x){
+					delete check->third;
+					check->third = NULL;
+					check->minSecond = findMin(check->second);
+					check->minThird = findMin(check->third);
+				}
+			}
+			else{		//is 2node interior
+				if (check->parent == NULL){	//is root
+					node23 * temp = check;
+
+					if (check->first->key == x){
+						head = check->second;
+						delete check->first;
+						delete temp;
+					}
+					else if (check->first->key == x){
+						head = check->first;
+						delete check->second;
+						delete temp;
+					}
+
+				}
+				else{			//not root
+					node23 * auntSue;
+					node23 * grandpa = check->parent;
+					if ((grandpa->first->third != NULL) && (check == grandpa->second)){
+						auntSue = grandpa->first;
+						if (check->second->key == x){
+							check->second = check->first;
+						}
+
+						check->first = auntSue->third;
+
+						auntSue->minSecond = findMin(auntSue->second);
+						auntSue->minThird = findMin(auntSue->third);
+					}
+					else if ((grandpa->second->third != NULL) && ((check == grandpa->first)||(check == grandpa->third))){
+						auntSue = grandpa->second;
+						if (check == grandpa->first){
+							if (check->first->key == x){
+								check->first = check->second;
+							}
+							check->second = auntSue->first;
+							auntSue->first = auntSue->second;
+							auntSue->second = auntSue->third;
+							auntSue->third == NULL;
+							auntSue->minThird = findMin(auntSue->third);
+						}
+						else{
+							if (check->second->key == x){
+								check->second = check->first;
+							}
+
+							check->first = auntSue->third;
+							auntSue->third = NULL;
+							auntSue->minThird = findMin(auntSue->third);
+						}
+					}
+					else if ((grandpa->third->third != NULL) && (check == grandpa->second)){
+						auntSue = grandpa->third;
+						if (check->first->key == x){
+							check->first = check->second;
+						}
+						check->second = auntSue->first;
+						auntSue->first = auntSue->second;
+						auntSue->second = auntSue->third;
+						auntSue->third = NULL;
+						auntSue->minThird = -1;
+					} /// -----------------------------------------------------------------------------------------------------------------------------------------
+					else{
+						node23 * sibling;
+						// sibling is the last surviving child of the parent
+						if (check->first->key == x) {
+							sibling = check->second;
+						}
+						else {
+							sibling = check->first;
+						}
+
+						// uncle is to the right
+						if (check == grandpa->first) {
+							auntSue = grandpa->second;
+
+							auntSue->third = auntSue->second;
+							auntSue->second = auntSue->first;
+							auntSue->first = sibling;
+						}
+						// uncle is to the right or left
+						else if (check == grandpa->second) {
+							auntSue = grandpa->first;		
+							if (auntSue->third == NULL) {
+								auntSue->third = sibling;
+							}
+							else {
+								auntSue = grandpa->third;
+
+								auntSue->third = auntSue->second;
+								auntSue->second = auntSue->first;
+								auntSue->first = sibling;
+							}
+						}
+						// uncle is to the left
+						else {
+							auntSue = grandpa->second;
+							auntSue->third = sibling;
+						}
+
+						// delete the node, remove the childless parent
+						delete nodeToDeletePtr;
+						remove(check);
+
+					}
+				}
+			}
+
+			// updateminst(head)
+			
+		}
+
+
+
+	}
+}
+
+//may not need
 void tree23::minSwitch(node23 *&L){
 
 }
 
 //finds node to be removed
 node23*& tree23::search(double x, node23 *&L){
-	return head;//not done 
+	node23 * notHere = NULL;
+	if (L == NULL){
+		return L;
+	}
+	else{
+		if (L->key == x){
+			if (L->parent != NULL){
+				return L->parent;
+			}
+			else {
+				return L;
+			}
+		}
+		else {
+			if (L->tag == 0){
+				if (x < L->minSecond){
+					search(x, L->first);
+				}
+				else if (x > L->minSecond){
+					if (L->minThird != NULL){
+						if (x < L->minThird){
+							search(x, L->second);
+						}
+						else{
+							search(x, L->third);
+						}
+					}
+					else {
+						search(x, L->second);
+					}
+				}
+				else if (x == L->minSecond){
+					search(x, L->second);
+				}
+			}
+			else{
+				return notHere;
+			}
+		}
+	}
+
+
+
+
 }
 
 //deletes minimum node23
 void tree23::deletemin(node23 *&L){
-
+	
 }
 
 //deletes maximum node23
