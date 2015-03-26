@@ -9,34 +9,26 @@
 
 using namespace std;
 
-struct node23{
-	int tag;
-	double minSecond;
-	double minThird;
-	double key;
-	node23 *parent;
-	node23 *first;
-	node23 *second;
-	node23 *third;
-};
-
 
 class tree23{
 private:
 	node23 *head;
+	bool needSplit;
 
 public:
 
 	tree23();
 	~tree23();
 	
-	void insert(double x, node23 *&L);
-	bool isInTree(double x, node23 *&L);
+	void insert1(double x, node23 *&L);
+	void insert2(double x, node23 *&newLeaf, node23 *&L);		//1 root node only    2 is for next node general case
+	void insert3(node23 *&oldParent, node23 *&newParent);
+	bool isInTree(double x, node23 *&L); 
 	node23*& findParent(double x, node23 *&L);
 	double findMin(node23 *&L);
 	void remove(double x); 
 	void minSwitch(node23 *&L );
-	node23*& search(double x, node23 *&L);
+	node23*& search(double x, node23 *&L); ///
 	void deletemin( node23 *&L);
 	void deletemax( node23 *&L);
  	void levelorder(node23 *&L);

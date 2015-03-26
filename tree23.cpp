@@ -1,10 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include "tree23.h"
+
 using namespace std;
 
 tree23::tree23(){
 	head = NULL;
+	needSplit = false;
 }
 
 
@@ -13,8 +15,8 @@ tree23::~tree23(){
 }
 
 
-//Insert a node23 into the tree
-void tree23::insert(double x, node23 *&L){
+//Insert up to two node23 into the tree after that it is passed to insert2 
+void tree23::insert1(double x, node23 *&L){
 
 	if (isInTree(x, L)){
 		cout << "Number already in tree \n";
@@ -33,7 +35,7 @@ void tree23::insert(double x, node23 *&L){
 		if (L == NULL){ //new tree
 			L = newLeaf;
 		}
-																			//--------------------done for 1 node--------------------
+		//--------------------done for 1 node--------------------
 		else{
 			if ((L->tag == 1) && (L->parent == NULL)){	//is leaf without parent so only one node23 currently in tree should only be one case
 				if (x < L->key){
@@ -78,16 +80,26 @@ void tree23::insert(double x, node23 *&L){
 					L->parent->minThird = -1;
 					L->parent->key = -1;
 					L->parent->parent = NULL;
-				 
+
 					head = L->parent;
 					head->parent = NULL;
 				}
 				else{
 					cout << " Error in inserting second node";
 				}
-																						//--------------------done for 2 node--------------------
+																		//--------------------done for 2 node--------------------
 			}
 			else if (L->tag == 0){		//general case; more than 2 nodes
+
+				insert2(x, newLeaf,findParent(x, L));
+			}
+		}
+	}
+}
+/*
+//Insert a node23 into the tree
+void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
+	
 				if (x < L->minSecond){			//goes into the first and moves everything over
 					if (x == L->first->key){
 						cout << "Error in finding a duplicate isInTree";
@@ -95,49 +107,49 @@ void tree23::insert(double x, node23 *&L){
 					else {
 						if (L->second->tag == 1){	//at parent
 							if (L->third == NULL){		//is 2node
-								if (L->parent == NULL){		//is 2node root
+								//if (L->parent == NULL){		//is 2node root
 									L->third = L->second;
 									L->second = L->first;
 									L->first = newLeaf;
 									newLeaf->parent = L;
 									L->minSecond = findMin(L->second);
 									L->minThird = findMin(L->third);
-								}
+								//}
 							}
 							else if (L->third != NULL){	//is 3node
-								if (L->parent == NULL) { //is 3node root
-									node23 * rootNew = new node23;
-									rootNew->parent = NULL;
-									rootNew->tag = 0;
-									rootNew->first = new node23;//
-									rootNew->second = new node23;//
-									//rootNew->minSecond = findMin(rootNew->second);//
-									rootNew->minThird = -1;//
-									rootNew->key = -1;
+								//if (L->parent == NULL) { //is 3node root
+									node23 * parentNew = new node23;
+									parentNew->parent = NULL;///////////////////////////////////////////////////
+									parentNew->tag = 0;
+									parentNew->first = new node23;//
+									parentNew->second = new node23;//
+									//parentNew->minSecond = findMin(parentNew->second);//
+									parentNew->minThird = -1;//
+									parentNew->key = -1;
 
-									rootNew->first->parent = rootNew;
-									rootNew->first->tag = 0;
-									rootNew->first->key = -1;
-									rootNew->first->first = newLeaf;
-									rootNew->first->second = L->first;
-									rootNew->first->third = NULL;
-									rootNew->first->minSecond = findMin(rootNew->first->second);
-									rootNew->first->minThird = -1;
+									parentNew->first->parent = parentNew;
+									parentNew->first->tag = 0;
+									parentNew->first->key = -1;
+									parentNew->first->first = newLeaf;
+									parentNew->first->second = L->first;
+									parentNew->first->third = NULL;
+									parentNew->first->minSecond = findMin(parentNew->first->second);
+									parentNew->first->minThird = -1;
 
-									rootNew->second->parent = rootNew;
-									rootNew->second->tag = 0;
-									rootNew->second->key = -1;
-									rootNew->second->first = L->second;
-									rootNew->second->second = L->third;
-									rootNew->second->third = NULL;
-									rootNew->second->minSecond = findMin(rootNew->second->second);
-									rootNew->second->minThird = -1;
+									parentNew->second->parent = parentNew;
+									parentNew->second->tag = 0;
+									parentNew->second->key = -1;
+									parentNew->second->first = L->second;
+									parentNew->second->second = L->third;
+									parentNew->second->third = NULL;
+									parentNew->second->minSecond = findMin(parentNew->second->second);
+									parentNew->second->minThird = -1;
 
-									rootNew->minSecond = findMin(rootNew->second);
-									//rootNew->minThird = findMin(rootNew->third);
-									head = rootNew;
+									parentNew->minSecond = findMin(parentNew->second);
+									//parentNew->minThird = findMin(parentNew->third);
+									head = parentNew;
 									head->parent = NULL;
-								}
+								//}
 							}
 
 						}
@@ -148,43 +160,43 @@ void tree23::insert(double x, node23 *&L){
 
 					if (L->second->tag == 1){	//at parent
 						if (L->third == NULL){		//is 2node
-							if (L->parent == NULL){		//is 2node root
+							//if (L->parent == NULL){		//is 2node root
 								L->third = newLeaf;
 								newLeaf->parent = L;
 								L->minThird = findMin(L->third);
-							}
+							//}
 						}
 						else if (L->third != NULL){	//is 3node
 							if (L->parent == NULL) { //is 3node root
-								node23 * rootNew = new node23;
-								rootNew->parent = NULL;
-								rootNew->tag = 0;
-								rootNew->first = new node23;//
-								rootNew->second = new node23;//
-								//rootNew->minSecond = findMin(rootNew->second);//
-								rootNew->minThird = -1;//
-								rootNew->key = -1;
+								node23 * parentNew = new node23;
+								parentNew->parent = NULL;
+								parentNew->tag = 0;
+								parentNew->first = new node23;//
+								parentNew->second = new node23;//
+								//parentNew->minSecond = findMin(parentNew->second);//
+								parentNew->minThird = -1;//
+								parentNew->key = -1;
 
-								rootNew->first->parent = rootNew;
-								rootNew->first->tag = 0;
-								rootNew->first->key = -1;
-								rootNew->first->first = L->first;
-								rootNew->first->second = L->second;
-								rootNew->first->third = NULL;
-								rootNew->first->minSecond = findMin(rootNew->first->second);
-								rootNew->first->minThird = -1;
+								parentNew->first->parent = parentNew;
+								parentNew->first->tag = 0;
+								parentNew->first->key = -1;
+								parentNew->first->first = L->first;
+								parentNew->first->second = L->second;
+								parentNew->first->third = NULL;
+								parentNew->first->minSecond = findMin(parentNew->first->second);
+								parentNew->first->minThird = -1;
 
-								rootNew->second->parent = rootNew;
-								rootNew->second->tag = 0;
-								rootNew->second->key = -1;
-								rootNew->second->first = L->third;
-								rootNew->second->second = newLeaf;
-								rootNew->second->third = NULL;
-								rootNew->second->minSecond = findMin(rootNew->second->second);
-								rootNew->second->minThird = -1;
+								parentNew->second->parent = parentNew;
+								parentNew->second->tag = 0;
+								parentNew->second->key = -1;
+								parentNew->second->first = L->third;
+								parentNew->second->second = newLeaf;
+								parentNew->second->third = NULL;
+								parentNew->second->minSecond = findMin(parentNew->second->second);
+								parentNew->second->minThird = -1;
 
-								rootNew->minSecond = findMin(rootNew->second);
-								head = rootNew;
+								parentNew->minSecond = findMin(parentNew->second);
+								head = parentNew;
 								head->parent = NULL;
 							}
 						}
@@ -197,6 +209,283 @@ void tree23::insert(double x, node23 *&L){
 		}
 	}
 }
+*/
+
+//general case for insertion
+void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
+
+	if (L->second->tag == 1){	//at parent
+		if (L->third == NULL){		//is 2node
+			if (x < L->minSecond){
+				L->third = L->second;
+				L->second = L->first;
+				L->first = newLeaf;
+				newLeaf->parent = L;
+				L->minSecond = findMin(L->second);
+				L->minThird = findMin(L->third);
+			}
+			else if (x > L->minSecond){
+				L->third = newLeaf;
+				newLeaf->parent = L;
+				L->minThird = findMin(L->third);
+			}
+		}
+		else{
+			if (L->third != NULL){	//is 3node
+				node23 * parentNew = new node23;
+				parentNew->parent = NULL;
+				parentNew->tag = 0;
+				//parentNew->first = new node23;//
+				//parentNew->second = new node23;//////////////////////////////////////////////////////////take care of kids
+				//parentNew->minSecond = findMin(parentNew->second);//
+				parentNew->minThird = -1;//
+				parentNew->key = -1;
+				parentNew->third = NULL;
+
+				if (x < L->first->key){
+
+					parentNew->second = L->third;
+					parentNew->first = L->second;
+					L->third = NULL;
+					L->second = L->first;
+					L->first = newLeaf;
+					newLeaf->parent = L;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					L->minSecond = findMin(L->second);
+					L->minThird = findMin(L->third);
+
+
+					/*
+					parentNew->first->parent = parentNew;
+					parentNew->first->tag = 0;
+					parentNew->first->key = -1;
+					parentNew->first->first = newLeaf;
+					parentNew->first->second = L->first;
+					parentNew->first->third = NULL;
+					parentNew->first->minSecond = findMin(parentNew->first->second);
+					parentNew->first->minThird = -1;
+
+					parentNew->second->parent = parentNew;
+					parentNew->second->tag = 0;
+					parentNew->second->key = -1;
+					parentNew->second->first = L->second;
+					parentNew->second->second = L->third;
+					parentNew->second->third = NULL;
+					parentNew->second->minSecond = findMin(parentNew->second->second);
+					parentNew->second->minThird = -1;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					//head = parentNew;
+					//head->parent = NULL;
+
+					*/
+				}
+				else if ((x > L->first->key) && (x < L->second->key)){
+
+
+					parentNew->second = L->third;
+					parentNew->first = L->second;
+					L->third = NULL;
+					L->second = newLeaf;
+					newLeaf->parent = L;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					L->minSecond = findMin(L->second);
+					L->minThird = findMin(L->third);
+
+					/*
+					parentNew->first->parent = parentNew;
+					parentNew->first->tag = 0;
+					parentNew->first->key = -1;
+					parentNew->first->first = L->first;
+					parentNew->first->second = newLeaf;
+					parentNew->first->third = NULL;
+					parentNew->first->minSecond = findMin(parentNew->first->second);
+					parentNew->first->minThird = -1;
+
+					parentNew->second->parent = parentNew;
+					parentNew->second->tag = 0;
+					parentNew->second->key = -1;
+					parentNew->second->first = L->second;
+					parentNew->second->second = L->third;
+					parentNew->second->third = NULL;
+					parentNew->second->minSecond = findMin(parentNew->second->second);
+					parentNew->second->minThird = -1;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					//head = parentNew;
+					//head->parent = NULL;
+
+					*/
+
+				}
+				else if ((x > L->second->key) && (x < L->third->key)){
+
+					parentNew->second = L->third;
+					parentNew->first = newLeaf;
+					L->third = NULL;
+					newLeaf->parent = parentNew;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					L->minSecond = findMin(L->second);
+					L->minThird = findMin(L->third);
+
+					/*
+					parentNew->first->parent = parentNew;
+					parentNew->first->tag = 0;
+					parentNew->first->key = -1;
+					parentNew->first->first = L->first;
+					parentNew->first->second = L->second;
+					parentNew->first->third = NULL;
+					parentNew->first->minSecond = findMin(parentNew->first->second);
+					parentNew->first->minThird = -1;
+
+					parentNew->second->parent = parentNew;
+					parentNew->second->tag = 0;
+					parentNew->second->key = -1;
+					parentNew->second->first = newLeaf;
+					parentNew->second->second = L->third;
+					parentNew->second->third = NULL;
+					parentNew->second->minSecond = findMin(parentNew->second->second);
+					parentNew->second->minThird = -1;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					//head = parentNew;
+					//head->parent = NULL;
+
+					*/
+
+				}
+
+				else if (x > L->third->key){
+
+					parentNew->second = newLeaf;
+					parentNew->first = L->third;
+					L->third = NULL;
+					newLeaf->parent = parentNew;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					L->minSecond = findMin(L->second);
+					L->minThird = findMin(L->third);
+
+					/*
+					parentNew->first->parent = parentNew;
+					parentNew->first->tag = 0;
+					parentNew->first->key = -1;
+					parentNew->first->first = L->first;
+					parentNew->first->second = L->second;
+					parentNew->first->third = NULL;
+					parentNew->first->minSecond = findMin(parentNew->first->second);
+					parentNew->first->minThird = -1;
+
+					parentNew->second->parent = parentNew;
+					parentNew->second->tag = 0;
+					parentNew->second->key = -1;
+					parentNew->second->first = L->third;
+					parentNew->second->second = newLeaf;
+					parentNew->second->third = NULL;
+					parentNew->second->minSecond = findMin(parentNew->second->second);
+					parentNew->second->minThird = -1;
+
+					parentNew->minSecond = findMin(parentNew->second);
+					//head = parentNew;
+					//head->parent = NULL;
+
+					*/
+				}
+
+
+				insert3(L, parentNew );
+
+			}
+		}
+	}
+}
+
+
+
+//putting everything together
+void tree23::insert3(node23 *& oldParent, node23 *&newParent){
+	if (oldParent->parent == NULL){		//is root
+		node23 * newRoot = new node23;
+		newRoot->tag = 0;
+		newRoot->first = oldParent;
+		newRoot->second = newParent;
+		newRoot->minThird = -1;
+		newRoot->minSecond = findMin(newRoot->second);		//breaks here at 20
+		newRoot->key = -1;
+		newRoot->third = NULL;
+		newRoot->parent = NULL;
+		
+		newParent->parent = newRoot;
+		head = newRoot;
+	
+	}
+	else{ 
+		node23 * conParent = oldParent->parent;
+		if (conParent->third == NULL){		//is 2node
+			if (conParent->first == oldParent){
+				conParent->third = conParent->second;
+				conParent->second = newParent;
+				newParent->parent = conParent;
+				conParent->minSecond = findMin(conParent->second);
+				conParent->minThird = findMin(conParent->third);
+			}
+			else{//is second child
+				conParent->third = newParent;
+				conParent->minSecond = findMin(conParent->second);
+				conParent->minThird = findMin(conParent->third);
+			}
+		}
+		else{ //is 3node
+			node23 * newconParent = new node23;
+			newconParent->tag = 0;
+			newconParent->key = -1;
+			newconParent->third = NULL;
+
+			if (conParent->first == oldParent){
+				newconParent->second = conParent->third;
+				newconParent->first = conParent->second;
+				conParent->second = newParent;
+				conParent->third = NULL;
+				newconParent->minSecond = findMin(newconParent->second);
+				newconParent->minThird = findMin(newconParent->third);
+				conParent->minSecond = findMin(conParent->second);
+				conParent->minThird = findMin(conParent->third);
+			}
+
+			else if (conParent->second == oldParent){
+				newconParent->second = conParent->third;
+				newconParent->first = newParent;
+				//conParent->second = newParent;
+				conParent->third = NULL;
+				newconParent->minSecond = findMin(newconParent->second);
+				newconParent->minThird = findMin(newconParent->third);
+				conParent->minSecond = findMin(conParent->second);
+				conParent->minThird = findMin(conParent->third);
+			}
+
+			else if (conParent->third == oldParent){
+				newconParent->second = newParent;
+				newconParent->first = conParent->third;
+				//conParent->second = newParent;
+				conParent->third = NULL;
+				newconParent->minSecond = findMin(newconParent->second);
+				newconParent->minThird = findMin(newconParent->third);
+				conParent->minSecond = findMin(conParent->second);
+				conParent->minThird = findMin(conParent->third);
+			}
+
+			insert3(conParent, newconParent);
+		}
+
+	}
+
+}
+
+
+
 
 //finds if node is in tree
 bool tree23::isInTree(double x, node23 *&L){
@@ -204,7 +493,7 @@ bool tree23::isInTree(double x, node23 *&L){
 		return false;
 	}
 	else{
-		if ((L->key == x) || (L->minSecond == x) || (L->minSecond == x)){
+		if ((L->key == x) || (L->minSecond == x) || (L->minThird == x)){
 			return true;
 		}
 		else{
@@ -235,7 +524,7 @@ bool tree23::isInTree(double x, node23 *&L){
 
 //finds parent for insertion
 node23*& tree23::findParent(double x, node23 *&L){
-	if (L = NULL){
+	if ((L == NULL)||(L->tag == 1)){
 		return L->parent;
 	}
 	else{
@@ -264,19 +553,21 @@ node23*& tree23::findParent(double x, node23 *&L){
 
 //returns minimum number for getting minSecond and minThirds
 double tree23::findMin(node23 *&L){
+	double value;
 	if (L == NULL){
 		return -1;
 	}
 	else if (L->tag == 1){
-		return L->key;
+		value = L->key;
+		return value;
 	}
-	else if (L->tag == 0){
+	else{ // if (L->tag == 0){
 		if (L->first == NULL){
 			cout << "first is null look at findMin";
 		}
 		findMin(L->first);
 	}
-};
+}
 
 void tree23::remove(double x){
 
@@ -304,40 +595,47 @@ void tree23::deletemax(node23 *&L){
 
 //Prints tree in level order
 void tree23::levelorder(node23 *&L){		//need to adjust for leaves and not leaves
-	queue q;
-	node23 *temp[800000];	// RISK DIDN'T DO CHECKS TO MAKE SURE IT DOESN'T EXCEED ARRAY SIZE
-	int i = 0;
-	int curr = 0;
+	queue23 q;
+	node23 * temp = L;
+	//node23 *temp[800000];	// RISK DIDN'T DO CHECKS TO MAKE SURE IT DOESN'T EXCEED ARRAY SIZE
+	//int i = 0;
+	//int curr = 0;
 	if (L == NULL){
 		cout << "Empty tree";
 	}
 	else{
-		q.insert(L->minSecond, q.getHead());
-		q.insert(L->minThird, q.getHead());
+		q.insert(temp, q.getHead());
+
 		while (!q.isEmpty()){
-			cout << q.peek()->data << " ";
+			if (q.peek()->data->tag == 0){
+				cout << q.peek()->data->minSecond << " " << q.peek()->data->minThird << " ";
+			}
+			else{
+				cout << q.peek()->data->key << " ";
+			}
 			q.pop();
-			if (L->first != NULL){
-				q.insert(L->first->minSecond, q.getHead());
-				q.insert(L->first->minThird, q.getHead());
-				temp[i] = L->first;
-				i++;
+			if (temp->first != NULL){
+				q.insert(temp->first, q.getHead());
+				//q.insert(L->first->minThird, q.getHead());
+				//temp[i] = L->first;
+				//i++;
 			}
-			if (L->second != NULL){
-				q.insert(L->second->minSecond, q.getHead());
-				q.insert(L->second->minThird, q.getHead());
-				temp[i] = L->second;
-				i++;
+			if (temp->second != NULL){
+				q.insert(temp->second, q.getHead());
+				//q.insert(L->second->minThird, q.getHead());
+				//temp[i] = L->second;
+				//i++;
 			}
-			if (L->third != NULL){
-				q.insert(L->third->minSecond, q.getHead());
-				q.insert(L->third->minThird, q.getHead());
-				temp[i] = L->third;
-				i++;
+			if (temp->third != NULL){
+				q.insert(temp->third, q.getHead());
+				//q.insert(L->third->minThird, q.getHead());
+				//temp[i] = L->third;
+				//i++;
 			}
 			if (q.peek() != NULL){
-				L = temp[curr]; //q.peek()->data;
-				curr++;
+				temp = q.peek()->data;
+				//L = temp[curr]; //q.peek()->data;
+				//curr++;
 			}
 		}
 	}

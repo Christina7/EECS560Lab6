@@ -2,12 +2,12 @@
 #include "queue23.h"
 using namespace std;
 
-queue::queue(){
+queue23::queue23(){
 	head = NULL;
 	flag = false;
 }
 
-queue::~queue(){
+queue23::~queue23(){
 	nodeQ *temp = head;
 	while (temp != NULL){
 		nodeQ *temp2 = temp->next;
@@ -18,8 +18,8 @@ queue::~queue(){
 	temp = NULL;
 }
 
-//adds nodeQ to end of queue if it is not already in the queue
-void queue::insert(double x, nodeQ *&L){
+//adds nodeQ to end of queue23 if it is not already in the queue23
+void queue23::insert(node23 *&x, nodeQ *&L){
 	if (L == NULL){	//if current nodeQ is NULL adds new nodeQ with data
 		L = new nodeQ;
 		L->data = x;
@@ -44,7 +44,7 @@ void queue::insert(double x, nodeQ *&L){
 }
 
 //checks if queue is empty
-bool queue::isEmpty(){
+bool queue23::isEmpty(){
 	if (head == NULL){
 		return true;
 	}
@@ -53,10 +53,10 @@ bool queue::isEmpty(){
 	}
 }
 
-//removes nodeQ from queue if there
-void queue::pop(){
+//removes nodeQ from queue23 if there
+void queue23::pop(){
 	if (head == NULL){
-		//cout << "Number not in queue \n";
+		//cout << "Number not in queue23 \n";
 	}
 	else{
 		nodeQ *temp = head->next;
@@ -68,9 +68,9 @@ void queue::pop(){
 }
 
 //prints current head
-nodeQ *& queue::peek(){
+nodeQ *& queue23::peek(){
 	if (head == NULL){
-		//cout << "Empty queue \n";
+		//cout << "Empty queue23 \n";
 		return head;
 	}
 	else{
@@ -79,6 +79,6 @@ nodeQ *& queue::peek(){
 }
 
 //returns head
-nodeQ*& queue::getHead(){
+nodeQ*& queue23::getHead(){
 	return head;
 }

@@ -22,7 +22,7 @@ int main(){
 		case 1:
 			cout << "Please insert the number that you want to be inserted in the tree \n";
 			cin >> x;
-			l.insert(x, l.getHead());
+			l.insert1(x, l.getHead());
 			break;
 		case 2:
 			cout << "Which number do you like to remove from the tree? \n";
