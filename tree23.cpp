@@ -502,7 +502,7 @@ bool tree23::isInTree(double x, node23 *&L){
 					isInTree(x, L->first);
 				}
 				else if (x > L->minSecond){
-					if (L->minThird != NULL){
+					if (L->third != NULL){
 						if (x < L->minThird){
 							isInTree(x, L->second);
 						}
@@ -533,7 +533,7 @@ node23*& tree23::findParent(double x, node23 *&L){
 				findParent(x, L->first);
 			}
 			else if (x > L->minSecond){
-				if (L->minThird != NULL){
+				if (L->third != NULL){
 					if (x < L->minThird){
 						findParent(x, L->second);
 					}
@@ -593,6 +593,8 @@ double tree23::findMax(node23 *&L){
 
 
 void tree23::remove(double x){
+	
+	/*
 	node23 * check = search(x, head);
 	
 	if (check == NULL){
@@ -743,6 +745,9 @@ void tree23::remove(double x){
 
 
 	}
+	
+	
+	*/
 }
 
 //may not need
@@ -751,7 +756,7 @@ void tree23::minSwitch(node23 *&L){
 }
 
 //finds node to be removed
-node23*& tree23::search(double x, node23 *&L){
+node23* tree23::search(double x, node23 *&L){
 	node23 * notHere = NULL;
 	if (L == NULL){
 		return L;
@@ -771,7 +776,7 @@ node23*& tree23::search(double x, node23 *&L){
 					search(x, L->first);
 				}
 				else if (x > L->minSecond){
-					if (L->minThird != NULL){
+					if (L->third != NULL){
 						if (x < L->minThird){
 							search(x, L->second);
 						}

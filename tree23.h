@@ -29,7 +29,7 @@ public:
 	double findMax(node23 *&L);
 	void remove(double x); 
 	void minSwitch(node23 *&L );
-	node23*& search(double x, node23 *&L); ///
+	node23* search(double x, node23 *&L); ///
 	void deletemin( node23 *&L);
 	void deletemax( node23 *&L);
  	void levelorder(node23 *&L);
