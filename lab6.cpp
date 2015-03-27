@@ -8,7 +8,7 @@ int main(){
 	ifstream fileName;
 	//fileName.open("C:\\Users\\Christina\\Documents\\GitHub\\560EECS\\EECS560Lab6\\EECS560Lab6\\data.txt");
 	fileName.open("data.txt");
-	l.build(fileName);
+	//l.build(fileName);
 
 
 	int input;

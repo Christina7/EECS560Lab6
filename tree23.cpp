@@ -212,7 +212,7 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 */
 
 //general case for insertion
-void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
+void tree23::insert2(double x, node23 *newLeaf, node23 *L){
 
 	if (L->second->tag == 1){	//at parent
 		if (L->third == NULL){		//is 2node just insert and adjust kids

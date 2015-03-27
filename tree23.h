@@ -21,7 +21,7 @@ public:
 	~tree23();
 	
 	void insert1(double x, node23 *&L);
-	void insert2(double x, node23 *&newLeaf, node23 *&L);		//1 root node only    2 is for next node general case
+	void insert2(double x, node23 *newLeaf, node23 *L);		//1 root node only    2 is for next node general case
 	void insert3(node23 *&oldParent, node23 *&newParent);
 	bool isInTree(double x, node23 *&L); 
 	node23*& findParent(double x, node23 *&L);
