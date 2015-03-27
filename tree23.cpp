@@ -677,7 +677,7 @@ void tree23::remove2(double x, node23 *&removenode){			//if x = -1 works just as
 							removenode->second->parent = removenode;
 							auntSue->first->parent = auntSue;
 							auntSue->second->parent = auntSue;
-							auntSue->third == NULL;
+							auntSue->third = NULL;
 							auntSue->minThird = -1;
 						}
 						else{
@@ -967,7 +967,8 @@ void tree23::levelorder(node23 *&L){		//need to adjust for leaves and not leaves
 			
 			
 			//(q.peek()->data-tag == 0)
-			if  ((q.peek()->data == head)||((q.peek()->data->tag == 0) && ((q.peek()->data->parent->third == q.peek()->data) || ((q.peek()->data->parent->second == q.peek()->data)&&(q.peek()->data->parent->third == NULL))))){
+			//if  ((q.peek()->data == head)||((q.peek()->data->tag == 0) && ((q.peek()->data->parent->third == q.peek()->data) || ((q.peek()->data->parent->second == q.peek()->data)&&(q.peek()->data->parent->third == NULL))))){
+			if (isHeadLastNode(q.peek()->data)){
 				cout << endl;
 			}
 						
@@ -988,8 +989,46 @@ void tree23::levelorder(node23 *&L){		//need to adjust for leaves and not leaves
 			}
 		}
 	}
-
+	
 }
+
+bool tree23::isHeadLastNode(node23 *&L){
+	node23 * temp = head;
+	if (head == NULL){
+		return false;
+	}
+	else if (L == head){
+		return true;
+	}
+	else{
+		if (temp->third == NULL){
+			temp = temp->second;
+		}
+		else{
+			temp = temp->third;
+		}
+		while (temp->minSecond != -1){
+
+			if ((L->tag == 0) && (L->minSecond == temp->minSecond) && (temp->minThird == -1)){
+				return true;
+			}
+			else if ((L->tag == 0) && (L->minThird == temp->minThird)&&(L->minThird != -1)){
+				return true;
+			}
+			else{
+				if (temp->third == NULL){
+					temp = temp->second;
+				}
+				else{
+					temp = temp->third;
+				}
+			}
+		
+		}
+		return false;
+	}
+}
+
 
 //returns head
 node23*& tree23::getHead(){

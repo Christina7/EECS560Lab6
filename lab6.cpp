@@ -6,8 +6,8 @@ int main(){
 
 	tree23 l;
 	ifstream fileName;
-//	fileName.open("C:\\Users\\Christina\\Documents\\GitHub\\678EECS\\EECS560Lab4\\data.txt");
-	fileName.open("data.txt");
+	fileName.open("C:\\Users\\Christina\\Documents\\GitHub\\560EECS\\EECS560Lab6\\EECS560Lab6\\data.txt");
+	//fileName.open("data.txt");
 	l.build(fileName);
 
 
@@ -36,7 +36,7 @@ int main(){
 			l.deletemax(l.getHead());
 			break;
 		case 5:
-			cout << "levelorder: ";
+			cout << "levelorder: \n";
 			l.levelorder(l.getHead());
 			cout << endl;
 			break;

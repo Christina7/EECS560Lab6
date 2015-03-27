@@ -35,6 +35,7 @@ public:
 	void deletemin( node23 *&L);
 	void deletemax( node23 *&L);
  	void levelorder(node23 *&L);
+	bool isHeadLastNode(node23 *&L);
 	node23*& getHead();
 	void build(ifstream& file);
 
