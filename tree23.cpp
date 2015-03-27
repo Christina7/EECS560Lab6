@@ -699,7 +699,7 @@ void tree23::remove2(double x, node23 *&removenode){			//if x = -1 works just as
 							auntSue->minThird = -1;
 						}
 					}
-					else if ((grandpa->third->third != NULL) && (removenode == grandpa->second)){
+					else if ((grandpa->third != NULL) && (grandpa->third->third != NULL) && (removenode == grandpa->second)){
 						auntSue = grandpa->third;
 						if (removenode->first->key == x){
 							removenode->first = removenode->second;
@@ -946,12 +946,12 @@ node23* tree23::search(double x, node23 *&L){
 
 //deletes minimum node23
 void tree23::deletemin(node23 *&L){
-	
+	remove(findMin(L));
 }
 
 //deletes maximum node23
 void tree23::deletemax(node23 *&L){
-
+	remove(findMax(L));
 }
 
 //Prints tree in level order
