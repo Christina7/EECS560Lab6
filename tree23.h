@@ -27,7 +27,9 @@ public:
 	node23*& findParent(double x, node23 *&L);
 	double findMin(node23 *&L);
 	double findMax(node23 *&L);
-	void remove(double x); 
+	void fixMin(node23 *&L);
+	void remove(double x);
+	void remove2(double x,node23 *&removenode);
 	void minSwitch(node23 *&L );
 	node23* search(double x, node23 *&L); ///
 	void deletemin( node23 *&L);

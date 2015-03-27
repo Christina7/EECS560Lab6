@@ -257,31 +257,6 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 					L->minSecond = findMin(L->second);
 					L->minThird = findMin(L->third);
 
-
-					/*
-					parentNew->first->parent = parentNew;
-					parentNew->first->tag = 0;
-					parentNew->first->key = -1;
-					parentNew->first->first = newLeaf;
-					parentNew->first->second = L->first;
-					parentNew->first->third = NULL;
-					parentNew->first->minSecond = findMin(parentNew->first->second);
-					parentNew->first->minThird = -1;
-
-					parentNew->second->parent = parentNew;
-					parentNew->second->tag = 0;
-					parentNew->second->key = -1;
-					parentNew->second->first = L->second;
-					parentNew->second->second = L->third;
-					parentNew->second->third = NULL;
-					parentNew->second->minSecond = findMin(parentNew->second->second);
-					parentNew->second->minThird = -1;
-
-					parentNew->minSecond = findMin(parentNew->second);
-					//head = parentNew;
-					//head->parent = NULL;
-
-					*/
 				}
 				else if ((x > L->first->key) && (x < L->second->key)){
 
@@ -298,31 +273,6 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 					L->minSecond = findMin(L->second);
 					L->minThird = findMin(L->third);
 
-					/*
-					parentNew->first->parent = parentNew;
-					parentNew->first->tag = 0;
-					parentNew->first->key = -1;
-					parentNew->first->first = L->first;
-					parentNew->first->second = newLeaf;
-					parentNew->first->third = NULL;
-					parentNew->first->minSecond = findMin(parentNew->first->second);
-					parentNew->first->minThird = -1;
-
-					parentNew->second->parent = parentNew;
-					parentNew->second->tag = 0;
-					parentNew->second->key = -1;
-					parentNew->second->first = L->second;
-					parentNew->second->second = L->third;
-					parentNew->second->third = NULL;
-					parentNew->second->minSecond = findMin(parentNew->second->second);
-					parentNew->second->minThird = -1;
-
-					parentNew->minSecond = findMin(parentNew->second);
-					//head = parentNew;
-					//head->parent = NULL;
-
-					*/
-
 				}
 				else if ((x > L->second->key) && (x < L->third->key)){
 
@@ -336,31 +286,6 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 					L->minSecond = findMin(L->second);
 					L->minThird = findMin(L->third);
 
-					/*
-					parentNew->first->parent = parentNew;
-					parentNew->first->tag = 0;
-					parentNew->first->key = -1;
-					parentNew->first->first = L->first;
-					parentNew->first->second = L->second;
-					parentNew->first->third = NULL;
-					parentNew->first->minSecond = findMin(parentNew->first->second);
-					parentNew->first->minThird = -1;
-
-					parentNew->second->parent = parentNew;
-					parentNew->second->tag = 0;
-					parentNew->second->key = -1;
-					parentNew->second->first = newLeaf;
-					parentNew->second->second = L->third;
-					parentNew->second->third = NULL;
-					parentNew->second->minSecond = findMin(parentNew->second->second);
-					parentNew->second->minThird = -1;
-
-					parentNew->minSecond = findMin(parentNew->second);
-					//head = parentNew;
-					//head->parent = NULL;
-
-					*/
-
 				}
 
 				else if (x > L->third->key){
@@ -373,31 +298,6 @@ void tree23::insert2(double x, node23 *&newLeaf, node23 *&L){
 					parentNew->minSecond = findMin(parentNew->second);
 					L->minSecond = findMin(L->second);
 					L->minThird = findMin(L->third);
-
-					/*
-					parentNew->first->parent = parentNew;
-					parentNew->first->tag = 0;
-					parentNew->first->key = -1;
-					parentNew->first->first = L->first;
-					parentNew->first->second = L->second;
-					parentNew->first->third = NULL;
-					parentNew->first->minSecond = findMin(parentNew->first->second);
-					parentNew->first->minThird = -1;
-
-					parentNew->second->parent = parentNew;
-					parentNew->second->tag = 0;
-					parentNew->second->key = -1;
-					parentNew->second->first = L->third;
-					parentNew->second->second = newLeaf;
-					parentNew->second->third = NULL;
-					parentNew->second->minSecond = findMin(parentNew->second->second);
-					parentNew->second->minThird = -1;
-
-					parentNew->minSecond = findMin(parentNew->second);
-					//head = parentNew;
-					//head->parent = NULL;
-
-					*/
 				}
 
 
@@ -604,102 +504,172 @@ double tree23::findMax(node23 *&L){
 }
 
 
+//fixes mins bottom up after remove craziness 
+void tree23::fixMin(node23 *&L){
+	if ((L->tag == 1) && (L != NULL)){
+		L->minSecond = -1;
+		L->minThird = -1;
+	}
+	else if (L->tag == 0){
+		fixMin(L->first);
+		L->minSecond = findMin(L->second);
+		L->minThird = findMin(L->third);
+		fixMin(L->second);
+		L->minSecond = findMin(L->second);
+		L->minThird = findMin(L->third);
+		if (L->minThird != NULL){
+			fixMin(L->third);
+			L->minSecond = findMin(L->second);
+			L->minThird = findMin(L->third);
+		}
+	}
+}
+
+
 
 void tree23::remove(double x){
-	
-	/*
-	node23 * check = search(x, head);
-	
-	if (check == NULL){
+
+	node23 * removenode = search(x, head);		//finds parent of the node to delete
+	if (removenode == NULL){
 		cout << "Error number not in tree";
 	}
 	else{
-		if ((check->parent == NULL) && (check->tag == 1)){
+		remove2(x, removenode);
+	}
+}
+
+void tree23::remove2(double x, node23 *&removenode){
+		if ((removenode->parent == NULL) && (removenode->tag == 1)){		//if root is leaf just delete root
 			delete head;
 			head = NULL;
-		}
-		else if (check->tag == 0){
-			if (check->third != NULL){		//is 3node
-				if (check->first->key == x){
-					delete check->first;
-					check->first = check->second;
-					check->second = check->third;
-					check->third = NULL;
-					check->minSecond = findMin(check->second);
-					check->minThird = findMin(check->third);
+		}//---------------------------------------------------------------------------------------------------------------------------------- 
+		else {		//not root
+			node23 * parentnode = removenode->parent;
+			if (removenode->third != NULL){		//is 3node
+				if (removenode->first->key == x){		//find where the node is and adjust the kids
+					delete removenode->first;
+					removenode->first = removenode->second;
+					removenode->second = removenode->third;
+					removenode->first->parent = removenode;
+					removenode->second->parent = removenode;
+					removenode->third = NULL;
+					removenode->minSecond = findMin(removenode->second);
+					removenode->minThird = findMin(removenode->third);
 				}
-				else if (check->second->key == x){
-					delete check->second;
-					check->second = check->third;
-					check->third = NULL;
-					check->minSecond = findMin(check->second);
-					check->minThird = findMin(check->third);
+				else if ((x == -1) && (removenode == parentnode->first)) {
+					delete removenode;
+					parentnode->first = parentnode->second;
+					parentnode->second = parentnode->third;
+					parentnode->first->parent = parentnode;
+					parentnode->second->parent = parentnode;
+					parentnode->third = NULL;
+					parentnode->minSecond = findMin(parentnode->second);
+					parentnode->minThird = findMin(parentnode->third);
 				}
-				else if (check->third->key == x){
-					delete check->third;
-					check->third = NULL;
-					check->minSecond = findMin(check->second);
-					check->minThird = findMin(check->third);
+
+				else if (removenode->second->key == x){
+					delete removenode->second;
+					removenode->second = removenode->third;
+					removenode->third = NULL;
+					removenode->second->parent = removenode;
+					removenode->minSecond = findMin(removenode->second);
+					removenode->minThird = findMin(removenode->third);
+				}
+				else if ((x == -1) && (removenode == parentnode->second)){
+					delete removenode;
+					parentnode->second = parentnode->third;
+					parentnode->second->parent = parentnode;
+					parentnode->third = NULL;
+					parentnode->minSecond = findMin(parentnode->second);
+					parentnode->minThird = findMin(parentnode->third);
+				}
+
+				else if (removenode->third->key == x){
+					delete removenode->third;
+					removenode->third = NULL;
+					removenode->minSecond = findMin(removenode->second);
+					removenode->minThird = findMin(removenode->third);		//---------------------------should pass to general remove------------------------------------------------------------
+				}
+				else if ((x == -1) && (removenode == parentnode->third)){
+					delete removenode;
+					parentnode->third = NULL;
+					parentnode->minSecond = findMin(parentnode->second);
+					parentnode->minThird = findMin(parentnode->third);
 				}
 			}
 			else{		//is 2node interior
-				if (check->parent == NULL){	//is root
-					node23 * temp = check;
+				if (removenode->parent == NULL){	//is root
+					node23 * temp = removenode;
 
-					if (check->first->key == x){
-						head = check->second;
-						delete check->first;
+					if (removenode->first->key == x){
+						head = removenode->second;
+						delete removenode->first;
 						delete temp;
 					}
-					else if (check->first->key == x){
-						head = check->first;
-						delete check->second;
+					else if (removenode->second->key == x){
+						head = removenode->first;
+						delete removenode->second;
 						delete temp;
 					}
 
 				}
-				else{			//not root
+				else if ((x == -1) && (parentnode->parent == NULL)){
+					node23 * temp = parentnode;
+					// Delete the parent node and make the other child the new root
+					if (removenode == parentnode->first) {
+						head = parentnode->second;
+						delete removenode;
+						delete temp;
+					}
+					else {
+						head = parentnode->first;
+						delete removenode;
+						delete temp;
+					}
+				}
+
+				else if (x != -1){			//not root
 					node23 * auntSue;
-					node23 * grandpa = check->parent;
-					if ((grandpa->first->third != NULL) && (check == grandpa->second)){
+					node23 * grandpa = removenode->parent;
+					if ((grandpa->first->third != NULL) && (removenode == grandpa->second)){
 						auntSue = grandpa->first;
-						if (check->second->key == x){
-							check->second = check->first;
+						if (removenode->second->key == x){
+							removenode->second = removenode->first;
 						}
 
-						check->first = auntSue->third;
+						removenode->first = auntSue->third;
 
 						auntSue->minSecond = findMin(auntSue->second);
 						auntSue->minThird = findMin(auntSue->third);
 					}
-					else if ((grandpa->second->third != NULL) && ((check == grandpa->first)||(check == grandpa->third))){
+					else if ((grandpa->second->third != NULL) && ((removenode == grandpa->first)||(removenode == grandpa->third))){
 						auntSue = grandpa->second;
-						if (check == grandpa->first){
-							if (check->first->key == x){
-								check->first = check->second;
+						if (removenode == grandpa->first){
+							if (removenode->first->key == x){
+								removenode->first = removenode->second;
 							}
-							check->second = auntSue->first;
+							removenode->second = auntSue->first;
 							auntSue->first = auntSue->second;
 							auntSue->second = auntSue->third;
 							auntSue->third == NULL;
 							auntSue->minThird = findMin(auntSue->third);
 						}
 						else{
-							if (check->second->key == x){
-								check->second = check->first;
+							if (removenode->second->key == x){
+								removenode->second = removenode->first;
 							}
 
-							check->first = auntSue->third;
+							removenode->first = auntSue->third;
 							auntSue->third = NULL;
 							auntSue->minThird = findMin(auntSue->third);
 						}
 					}
-					else if ((grandpa->third->third != NULL) && (check == grandpa->second)){
+					else if ((grandpa->third->third != NULL) && (removenode == grandpa->second)){
 						auntSue = grandpa->third;
-						if (check->first->key == x){
-							check->first = check->second;
+						if (removenode->first->key == x){
+							removenode->first = removenode->second;
 						}
-						check->second = auntSue->first;
+						removenode->second = auntSue->first;
 						auntSue->first = auntSue->second;
 						auntSue->second = auntSue->third;
 						auntSue->third = NULL;
@@ -708,15 +678,15 @@ void tree23::remove(double x){
 					else{
 						node23 * sibling;
 						// sibling is the last surviving child of the parent
-						if (check->first->key == x) {
-							sibling = check->second;
+						if (removenode->first->key == x) {
+							sibling = removenode->second;
 						}
 						else {
-							sibling = check->first;
+							sibling = removenode->first;
 						}
 
 						// uncle is to the right
-						if (check == grandpa->first) {
+						if (removenode == grandpa->first) {
 							auntSue = grandpa->second;
 
 							auntSue->third = auntSue->second;
@@ -724,7 +694,7 @@ void tree23::remove(double x){
 							auntSue->first = sibling;
 						}
 						// uncle is to the right or left
-						else if (check == grandpa->second) {
+						else if (removenode == grandpa->second) {
 							auntSue = grandpa->first;		
 							if (auntSue->third == NULL) {
 								auntSue->third = sibling;
@@ -744,24 +714,146 @@ void tree23::remove(double x){
 						}
 
 						// delete the node, remove the childless parent
-						delete nodeToDeletePtr;
-						remove(check);
+						if (removenode->first->key == x) {
+							delete removenode->first;
+						}
+						else if (removenode->second->key == x) {
+							delete removenode->second;
+						}
 
+						remove2(-1, removenode);
+
+					}
+				}
+				else if(x == -1){
+					node23* grandpa = parentnode->parent;
+					node23* auntSue;
+					if ((grandpa->first->third != NULL) && (grandpa->second == parentnode)){
+						auntSue = grandpa->first;
+						// node to delete is the second child, so we shift the
+						// parent
+						if (removenode == parentnode->second) {
+							parentnode->second = parentnode->first;
+							parentnode->second->parent = parentnode;
+						}
+
+						parentnode->first = auntSue->third;
+						parentnode->first->parent = parentnode;
+
+						auntSue->third = NULL;
+						auntSue->minThird = findMin(auntSue->third);
+					}
+					else if ((grandpa->second->third != NULL) && (grandpa->first == parentnode || grandpa->third == parentnode)) {
+						auntSue = grandpa->second;
+						// 3-node uncle is to the right
+						if (parentnode == grandpa->first) {
+							// node to delete is the parent's 1st child, so we shift
+							// the parent
+							if (removenode == parentnode->first) {
+								parentnode->first = parentnode->second;
+								parentnode->first->parent = parentnode;
+							}
+
+							parentnode->second = auntSue->first;
+							auntSue->first = auntSue->second;
+							auntSue->second = auntSue->third;
+							parentnode->second->parent = parentnode;
+							auntSue->first->parent = auntSue;
+							auntSue->second->parent = auntSue;
+							
+							auntSue->third = NULL;
+							auntSue->minThird = -1;
+						}
+						// 3-node uncle is to the left
+						else {
+							// node to delete is the 2nd child, so we shift the
+							// parent
+							if (removenode == parentnode->second) {
+								parentnode->second = parentnode->first;
+								parentnode->second->parent = parentnode;
+							}
+							parentnode->first = auntSue->third;
+							parentnode->first->parent = parentnode;
+							auntSue->third = NULL;
+							auntSue->minThird = -1;
+						}
+					}
+					else if ((grandpa->third != NULL) && (grandpa->second == parentnode)){
+						auntSue = grandpa->third;
+						// node to delete is the 1st child, so we shift the parent
+						if (removenode == parentnode->first) {
+							parentnode->first = parentnode->second;
+							parentnode->first->parent = parentnode;
+						}
+
+						parentnode->second = auntSue->first;
+						auntSue->first = auntSue->second;
+						auntSue->second = auntSue->third;
+						parentnode->second->parent = parentnode;
+						auntSue->first->parent = auntSue;
+						auntSue->second->parent = auntSue;
+
+						auntSue->third = NULL;
+						auntSue->minThird = -1;
+					}
+					else {
+						node23* sibling;
+						// sibling is the last surviving child of the parent
+						if (parentnode->first == removenode) {
+							sibling = parentnode->second;
+						}
+						else {
+							sibling = parentnode->first;
+						}
+
+						// uncle is to the right
+						if (parentnode == grandpa->first) {
+							auntSue = grandpa->second;
+
+							auntSue->third = auntSue->second;
+							auntSue->second = auntSue->first;
+							auntSue->first = sibling;
+							auntSue->third->parent = auntSue;
+							auntSue->second->parent = auntSue;
+							auntSue->first->parent = auntSue;
+
+						}
+						// uncle is to the right or left
+						else if (parentnode == grandpa->second) {
+							auntSue = grandpa->first;
+							if (auntSue->third == NULL) {
+								auntSue->third = sibling;
+								auntSue->third->parent = auntSue;
+							}
+							else {
+								auntSue = grandpa->third;
+
+								auntSue->third = auntSue->second;
+								auntSue->second = auntSue->first;
+								auntSue->first = sibling;
+								auntSue->third->parent = auntSue;
+								auntSue->second->parent = auntSue;
+								auntSue->first->parent = auntSue;
+							}
+						}
+						else {
+							auntSue = grandpa->second;
+							auntSue->third = sibling;
+							auntSue->third->parent = sibling;
+						}
+
+						// delete the node, remove the childless parent
+						delete removenode;
+						remove2(-1,parentnode);
 					}
 				}
 			}
 
-			// updateminst(head)
-			
-		}
-
-
-
+		fixMin(head);	
 	}
-	
-	
-	*/
 }
+	
+
 
 //may not need
 void tree23::minSwitch(node23 *&L){
