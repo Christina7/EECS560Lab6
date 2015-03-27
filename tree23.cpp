@@ -998,6 +998,9 @@ node23*& tree23::getHead(){
 
 
 void tree23::build(ifstream& file){
-
+	double item;
+	while (file >> item){//read from file and add each number to head
+		insert1(item, head);
+	}
 }
 
