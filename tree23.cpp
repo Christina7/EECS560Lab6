@@ -459,7 +459,14 @@ bool tree23::isInTree(double x, node23 *&L){
 //finds parent for insertion
 node23*& tree23::findParent(double x, node23 *&L){
 	if ((L == NULL)||(L->tag == 1)){
-		return L->parent;
+		//if (L->parent->third == NULL){
+			return L->parent;
+	//	}
+		//else{
+			//if (L->parent == L->parent->parent->first){///////////////////////////////////////////do sibling stuff if easy
+			
+			//}
+		//}
 	}
 	else{
 		if (L->tag == 0){
@@ -471,7 +478,7 @@ node23*& tree23::findParent(double x, node23 *&L){
 					if (x < L->minThird){
 						findParent(x, L->second);
 					}
-					else{
+					else{ 
 						findParent(x, L->third);
 					}
 				}

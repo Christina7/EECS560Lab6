@@ -6,8 +6,8 @@ int main(){
 
 	tree23 l;
 	ifstream fileName;
-	fileName.open("C:\\Users\\Christina\\Documents\\GitHub\\560EECS\\EECS560Lab6\\EECS560Lab6\\data.txt");
-	//fileName.open("data.txt");
+	//fileName.open("C:\\Users\\Christina\\Documents\\GitHub\\560EECS\\EECS560Lab6\\EECS560Lab6\\data.txt");
+	fileName.open("data.txt");
 	l.build(fileName);
 
 
